@@ -30,7 +30,7 @@ Modern, responsive frontend application built with Next.js 14, TypeScript, and T
 
 ---
 
-![dashboard](/home/mustapha/IdeaProjects/client-portal-front-end/img/Screenshot from 2025-12-03 23-01-53.png)
+![dashboard](/img/Screenshot%20from%202025-12-03%2023-01-53.png)
 
 ## 🎯 Overview
 
@@ -93,7 +93,7 @@ This is the frontend application for the Mini ERP system, providing intuitive in
 
 ---
 
-![products](/home/mustapha/IdeaProjects/client-portal-front-end/img/Screenshot from 2025-12-03 23-02-16.png)
+![products](/img/Screenshot%20from%202025-12-03%2023-02-16.png)
 
 ## 🛠 Tech Stack
 
@@ -128,8 +128,8 @@ This is the frontend application for the Mini ERP system, providing intuitive in
 
 ---
 
-![products](/home/mustapha/IdeaProjects/client-portal-front-end/img/Screenshot from 2025-12-03 23-02-27.png)
-![Login](/home/mustapha/IdeaProjects/client-portal-front-end/img/Screenshot from 2025-12-03 23-14-46.png)
+![products](/img/Screenshot%20from%202025-12-03%2023-02-27.png)
+![Login](//img/Screenshot%20from%202025-12-03%2023-14-46.png)
 ## 🚀 Getting Started
 
 ### Prerequisites
