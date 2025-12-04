@@ -31,30 +31,33 @@ export default function StaffPage() {
     }
   }, [token])
 
-  const fetchStaff = async () => {
-    try {
-      setLoading(true)
-      const response = await fetch("http://localhost:8080/api/staff", {
-        // 3. Add Authorization Header
-        headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json"
-        }
-      })
-      
-      if (response.ok) {
-        const data = await response.json()
-        setStaff(data.content || [])
-      } else {
-        console.error("Failed to fetch staff")
+const fetchStaff = async () => {
+  try {
+    setLoading(true)
+    const response = await fetch("http://localhost:8080/api/staff", {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
       }
-    } catch (error) {
-      console.error("Error fetching staff:", error)
+    })
+
+    const data = await response.json()
+    
+    if (!response.ok) {
+      console.error("Failed to fetch staff:", data)
       setStaff([])
-    } finally {
-      setLoading(false)
+      return
     }
+
+    setStaff(data.content || [])
+  } catch (error) {
+    console.error("Error fetching staff:", error)
+    setStaff([])
+  } finally {
+    setLoading(false)
   }
+}
+
 
   const handleDelete = async (id: number) => {
     if (confirm("Are you sure you want to delete this staff member?")) {

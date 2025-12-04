@@ -6,7 +6,7 @@ import { Header } from "@/components/header"
 import { Button } from "@/components/ui/button"
 import { Plus, Edit, Trash2 } from "lucide-react"
 import { ProductModal } from "@/components/product-modal"
-// ✅ 1. Import useAuth
+
 import { useAuth } from "@/app/contexts/auth-context"
 
 interface Product {
@@ -23,7 +23,7 @@ export default function ProductsPage() {
   const [showModal, setShowModal] = useState(false)
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
 
-  // ✅ 2. Get the token
+
   const { token } = useAuth()
 
   useEffect(() => {

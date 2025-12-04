@@ -129,7 +129,7 @@ This is the frontend application for the Mini ERP system, providing intuitive in
 ---
 
 ![products](/img/Screenshot%20from%202025-12-03%2023-02-27.png)
-![Login](//img/Screenshot%20from%202025-12-03%2023-14-46.png)
+![Login](/img/Screenshot%20from%202025-12-03%2023-14-46.png)
 ## 🚀 Getting Started
 
 ### Prerequisites
