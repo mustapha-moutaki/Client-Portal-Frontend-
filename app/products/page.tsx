@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useEffect, useState } from "react"
@@ -6,7 +7,6 @@ import { Header } from "@/components/header"
 import { Button } from "@/components/ui/button"
 import { Plus, Edit, Trash2 } from "lucide-react"
 import { ProductModal } from "@/components/product-modal"
-
 import { useAuth } from "@/app/contexts/auth-context"
 
 interface Product {
@@ -23,11 +23,10 @@ export default function ProductsPage() {
   const [showModal, setShowModal] = useState(false)
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
 
-
-  const { token } = useAuth()
+  const { token, user } = useAuth()
+  const userRole = user?.role || "CLIENT"
 
   useEffect(() => {
-    // Only fetch if we have a token
     if (token) {
       fetchProducts()
     }
@@ -37,7 +36,6 @@ export default function ProductsPage() {
     try {
       setLoading(true)
       const response = await fetch("http://localhost:8080/api/products", {
-        // ✅ 3. Add Authorization Header
         headers: {
             "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json"
@@ -64,7 +62,6 @@ export default function ProductsPage() {
       try {
         await fetch(`http://localhost:8080/api/products/${id}`, {
           method: "DELETE",
-          // ✅ 4. Add Authorization Header here too!
           headers: {
             "Authorization": `Bearer ${token}`
           }
@@ -99,10 +96,13 @@ export default function ProductsPage() {
                 <h1 className="text-3xl font-bold text-foreground mb-2">Products</h1>
                 <p className="text-muted-foreground">Manage your product inventory</p>
               </div>
-              <Button onClick={() => setShowModal(true)} className="gap-2">
-                <Plus className="w-4 h-4" />
-                Create Product
-              </Button>
+              {/* Create Product button only for Admin/ Supervisor/ Operator */}
+              {(userRole !== "CLIENT") && (
+                <Button onClick={() => setShowModal(true)} className="gap-2">
+                  <Plus className="w-4 h-4" />
+                  Create Product
+                </Button>
+              )}
             </div>
 
             {loading ? (
@@ -112,10 +112,12 @@ export default function ProductsPage() {
             ) : products.length === 0 ? (
               <div className="bg-card border border-border rounded-lg p-8 text-center">
                 <p className="text-muted-foreground mb-4">No products found</p>
-                <Button onClick={() => setShowModal(true)} className="gap-2">
-                  <Plus className="w-4 h-4" />
-                  Create First Product
-                </Button>
+                {(userRole !== "CLIENT") && (
+                  <Button onClick={() => setShowModal(true)} className="gap-2">
+                    <Plus className="w-4 h-4" />
+                    Create First Product
+                  </Button>
+                )}
               </div>
             ) : (
               <div className="bg-card border border-border rounded-lg overflow-hidden">
@@ -126,7 +128,10 @@ export default function ProductsPage() {
                       <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Price</th>
                       <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Type</th> 
                       <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Description</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Actions</th>
+                      {/* Actions column hidden for Client */}
+                      {userRole !== "CLIENT" && (
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Actions</th>
+                      )}
                     </tr>
                   </thead>
                   <tbody>
@@ -144,21 +149,24 @@ export default function ProductsPage() {
                         <td className="px-6 py-4 text-sm text-muted-foreground truncate max-w-[200px]">
                           {product.description || "No description"}
                         </td>
-                        <td className="px-6 py-4 text-sm flex gap-2">
-                          <Button variant="outline" size="sm" onClick={() => handleEdit(product)} className="gap-1">
-                            <Edit className="w-4 h-4" />
-                            Edit
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleDelete(product.id)}
-                            className="gap-1 text-destructive hover:text-destructive"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                            Delete
-                          </Button>
-                        </td>
+                        {/* Actions buttons only for Admin/ Supervisor/ Operator */}
+                        {userRole !== "CLIENT" && (
+                          <td className="px-6 py-4 text-sm flex gap-2">
+                            <Button variant="outline" size="sm" onClick={() => handleEdit(product)} className="gap-1">
+                              <Edit className="w-4 h-4" />
+                              Edit
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleDelete(product.id)}
+                              className="gap-1 text-destructive hover:text-destructive"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                              Delete
+                            </Button>
+                          </td>
+                        )}
                       </tr>
                     ))}
                   </tbody>
@@ -168,7 +176,10 @@ export default function ProductsPage() {
           </div>
         </main>
       </div>
-      <ProductModal isOpen={showModal} onClose={handleCloseModal} product={editingProduct} />
+      {/* Modal only openable by Admin/ Supervisor/ Operator */}
+      {(userRole !== "CLIENT") && (
+        <ProductModal isOpen={showModal} onClose={handleCloseModal} product={editingProduct} />
+      )}
     </div>
   )
 }
