@@ -238,22 +238,64 @@ export default function ClaimsPage() {
     if (token) fetchClaims()
   }, [token])
 
+  // const fetchClaims = async () => {
+  //   try {
+  //     setLoading(true)
+  //     const res = await fetch("http://localhost:8080/api/claims?size=100", {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     })
+  //     if (res.ok) {
+  //       const data = await res.json()
+  //       setClaims(data.content || [])
+  //     }
+  //   } catch (error) {
+  //     console.error(error)
+  //   } finally {
+  //     setLoading(false)
+  //   }
+  // }
   const fetchClaims = async () => {
-    try {
-      setLoading(true)
-      const res = await fetch("http://localhost:8080/api/claims?size=100", {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      if (res.ok) {
-        const data = await res.json()
-        setClaims(data.content || [])
+  try {
+    setLoading(true);
+
+    let url = "http://localhost:8080/api/claims?size=100";
+
+    if (isClient) {
+      const clientId = localStorage.getItem("id");
+      if (!clientId) {
+        console.error("Client ID not found in localStorage");
+        setClaims([]);
+        return;
       }
-    } catch (error) {
-      console.error(error)
-    } finally {
-      setLoading(false)
+      url = `http://localhost:8080/api/claims/${clientId}`;
     }
+
+    const res = await fetch(url, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+
+      if (isClient) {
+      
+        setClaims(Array.isArray(data) ? data : [data]);
+      } else {
+        // Admin/Staff pagination
+        setClaims(data.content || []);
+      }
+    } else {
+      console.error("Failed to fetch claims");
+      setClaims([]);
+    }
+  } catch (error) {
+    console.error(error);
+    setClaims([]);
+  } finally {
+    setLoading(false);
   }
+};
+
 
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this claim?")) return
