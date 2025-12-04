@@ -267,7 +267,7 @@ export default function ClaimsPage() {
         setClaims([]);
         return;
       }
-      url = `http://localhost:8080/api/claims/${clientId}`;
+      url = `http://localhost:8080/api/claims/client/${clientId}`;
     }
 
     const res = await fetch(url, {
