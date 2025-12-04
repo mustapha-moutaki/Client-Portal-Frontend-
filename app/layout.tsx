@@ -43,7 +43,7 @@ export default function RootLayout({
         className={`font-sans antialiased`}
         suppressHydrationWarning={true}
       >
-        {/* ✅ 2. تغليف التطبيق بـ AuthProvider */}
+     
         <AuthProvider>
           {children}
           <Analytics />

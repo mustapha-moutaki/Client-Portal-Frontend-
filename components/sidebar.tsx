@@ -1,44 +1,38 @@
+
 "use client"
+
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Package, Users, FileText, Clipboard, LayoutDashboard } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useAuth } from "@/app/contexts/auth-context"
 
 export function Sidebar() {
   const pathname = usePathname()
+  const { user } = useAuth() // get logged-in user
 
+  // Wait until user is loaded
+  if (!user) return null
+
+  // Define all possible menu items
   const menuItems = [
-    {
-      href: "/",
-      label: "Dashboard",
-      icon: LayoutDashboard,
-    },
-    {
-      href: "/products",
-      label: "Products",
-      icon: Package,
-    },
-    {
-      href: "/staff",
-      label: "Staff",
-      icon: Users,
-    },
-    {
-      href: "/leads",
-      label: "Leads",
-      icon: FileText,
-    },
-    {
-      href: "/claims",
-      label: "Claims",
-      icon: Clipboard,
-    },
+    { href: "/", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/products", label: "Products", icon: Package },
+    { href: "/staff", label: "Staff", icon: Users },
+    { href: "/leads", label: "Leads", icon: FileText },
+    { href: "/claims", label: "Claims", icon: Clipboard },
   ]
 
-  const isActive = (href: string) => {
-    if (href === "/") return pathname === "/"
-    return pathname.startsWith(href)
-  }
+  // Filter menu items based on role
+  const filteredMenuItems = menuItems.filter((item) => {
+    if (user.role === "CLIENT") {
+      // Clients cannot see Staff or Leads
+      return item.href !== "/staff" && item.href !== "/leads"
+    }
+    return true // Other roles see everything
+  })
+
+  const isActive = (href: string) => pathname === href || pathname.startsWith(href)
 
   return (
     <aside className="w-64 bg-sidebar border-r border-sidebar-border flex flex-col">
@@ -47,7 +41,7 @@ export function Sidebar() {
       </div>
 
       <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
-        {menuItems.map((item) => {
+        {filteredMenuItems.map((item) => {
           const Icon = item.icon
           const active = isActive(item.href)
 
@@ -59,7 +53,7 @@ export function Sidebar() {
                 "flex items-center gap-3 px-4 py-2 rounded-md transition-colors",
                 active
                   ? "bg-sidebar-primary text-sidebar-primary-foreground"
-                  : "text-sidebar-foreground hover:bg-sidebar-accent",
+                  : "text-sidebar-foreground hover:bg-sidebar-accent"
               )}
             >
               <Icon className="w-5 h-5" />
